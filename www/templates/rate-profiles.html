@@ -1,0 +1,27 @@
+<!--
+This template loads for the 'tab.friend-detail' state (app.js)
+'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
+The FriendsCtrl pulls data from the Friends service (service.js)
+The Friends service returns an array of friend data
+-->
+<ion-view view-title="{{event.name}}">
+	<ion-content class="padding text-center">
+		<ion-slide-box show-pager="false" on-slide-changed="slideHasChanged($index)" disable-scroll="true">
+			<ion-slide ng-repeat="profile in profiles">
+				<img ng-src="img/profiles/{{profile.img}}" style="width: 50%; border-radius: 100%;" id="slide-{{$index}}">
+				<h3>
+					{{profile.name}} ({{profile.age}})
+				</h3>
+			</ion-slide>
+		</ion-slide-box>
+		<div class="row">
+			<div class="col">
+				<button class="button button-asertive" ng-click="next(0)">err... Not</button>
+			</div>
+			<div class="col col-10"></div>
+			<div class="col">
+				<button class="button button-balanced" ng-click="next(1)">Nice!</button>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

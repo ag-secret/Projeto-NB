@@ -1,0 +1,41 @@
+<ion-view title="{{chat.name}}">
+	<ion-nav-buttons side="right">
+		<a class="button button-icon icon ion-person" href="#/tab/match-profile/{{chat.id}}"></a>
+	</ion-nav-buttons>
+
+	<ion-content class="has-header has-footer padding">
+
+
+		<div ng-show="chat.messages">
+			<ion-refresher
+				ng-if="chat.messages"
+				pulling-text="Puxe para atualizar..."
+				on-refresh="doRefresh()">
+			</ion-refresher>
+			<div ng-class-odd="'row'" ng-repeat="message in chat.messages" >
+				<div class="col col-top " ng-class="{'text-right': message.account_id != chat.id}">
+					<div style="float: left; width: 10%;">
+						<img ng-show="message.account_id == chat.id" src="img/profiles/{{chat.img}}" class="img-circle" width="100%;">
+					</div>
+					<div style="float: right; width: 87%; margin-left: 3%;">
+						<span 
+							ng-class="message.account_id != chat.id ? 'chat-speech-bubble' : 'chat-speech-bubble-me'">
+							{{ message.message }}
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<h5 class="text-center" ng-show="!chat.messages">Você ainda não trocou mensagens com {{chat.name}}.</h5>
+
+	</ion-content>
+
+	<div class="bar bar-footer item-input-inset" style="height: 65px; margin-bottom: 10px;">
+		<label class="item-input-wrapper" >
+			<input type="text" placeholder="Enviar mensagem..." ng-model="messageToSend" style="height: 40px;">
+		</label>
+		<button class="button button-icon icon ion-paper-airplane" ng-click="sendMessage()" ng-disabled="!messageToSend"></button>
+	</div>
+
+</ion-view>

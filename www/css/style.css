@@ -1,0 +1,37 @@
+/* Empty. Add your own CSS if you like */
+
+/* Common */
+a{
+	color: #3498db;
+}
+
+.img-circle{
+	border-radius: 100%;
+	moz-border-radius: 100%;
+	webkit-border-radius: 100%;
+}
+
+/* Chat detail page*/
+.chat-speech-bubble, .chat-speech-bubble-me{
+	padding: 10px;
+	border-radius: 4px;
+	moz-border-radius: 4px;
+	webkit-border-radius: 4px;
+	margin-bottom: 10px;
+	display: inline-block;
+	text-align: left;
+	font-size: 16px;
+
+}
+.chat-speech-bubble-me{
+	background-color: #ecf0f1;
+}
+.chat-speech-bubble{
+	color: white;
+	background-color: #3498db;
+}
+
+/*Login Page*/
+.login-content{
+	margin-top: 40%;
+}
