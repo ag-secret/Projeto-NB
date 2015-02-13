@@ -1,0 +1,11 @@
+<div class="list">
+	<div class="item item-divider">
+		Entre {{popupdata.age.min}} e {{ popupdata.age.max | labelMaxAge:60 }}
+	</div>
+	<div class="item range range-positive">
+		De <input type="range" min="18" max="60" ng-model="popupdata.age.min" ng-change="rangeControl('min')">
+	</div>
+	<div class="item range range-positive">
+		Até <input type="range" min="18" max="60" ng-model="popupdata.age.max" ng-change="rangeControl('max')">
+	</div>
+</div>

@@ -1,0 +1,52 @@
+<ion-view view-title="{{ title }}">
+	<ion-content class="text-center">
+
+<!-- 		<div style="padding: 15px 5px; background: #2ecc71; color: white; margin-bottom: 10px;" >
+			Você saiu da sua localidade mas pode continuar vendo.
+			<button class="button button-royal button-small" ng-click="showPopupAndRefresh()">Clique aqui para refresh</button>
+		</div> -->
+
+
+		<!-- Mostra quando na parte que ainda nao buscou ninguem -->
+		<div ng-show="profiles.length === 0">
+			<!-- Mostra quando não estpa dentro de nenhum evento -->
+			<div ng-show="currentEvents.length === 0">
+				<h4>
+					Você não está no alcance de nenhum evento atualmente.
+				</h4>
+				<button class="button button-block button-positive" ng-click="getEventsImIn()">Buscar novamente</button>
+			</div>
+			<!-- Mostra quando está dentro de ao menos um evento -->
+			<div ng-show="currentEvents.length > 0">
+				<h5>
+					Nenhum pessoa encontrada em <strong>{{currentEvent.place.name}} - {{currentEvent.name}}</strong>, mas calma elas estão chegando!
+				</h5>
+				<button class="button button-block button-positive" ng-click="getCloseProfiles()">Buscar pessoas</button>
+			</div>
+		</div>
+
+		<div ng-show="profiles.length > 0">
+			<div class="list">
+				<div class="item">
+					<h2
+						ng-click="showPopupAndRefresh()">
+						{{currentEvent.place.name}} - {{currentEvent.name}}
+						<span
+							class="icon ion-android-dropdown"
+							ng-show="currentEvents.length > 1 || showPopupTrigger"></span>
+					</h2>
+				</div>
+			</div>
+
+			<div class="" style="background-color: #E7E7E7; background-image: url({{profiles[0].profile_picture}}); background-size: cover; height: 300px;">
+			</div>
+			<div class="">
+				<h2>{{ profiles[0].name }}</h2>
+				<button class="button button-royal" ng-click="response(0)">Not</button>
+				<button class="button button-success" ng-click="response(1)">Nice</button>	
+			</div>
+
+		</div>
+
+	</ion-content>
+</ion-view>

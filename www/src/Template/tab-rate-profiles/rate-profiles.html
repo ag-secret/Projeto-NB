@@ -1,0 +1,55 @@
+<ion-view view-title="{{ title }}">
+	<ion-content class="text-center">
+
+<!-- 		<div style="padding: 15px 5px; background: #2ecc71; color: white; margin-bottom: 10px;" >
+			Você saiu da sua localidade mas pode continuar vendo.
+			<button class="button button-royal button-small" ng-click="showPopupAndRefresh()">Clique aqui para refresh</button>
+		</div> -->
+
+		<!--
+			Bloco que aparece para informar que houve um problema de comunicação com o servidor
+			Seja por falta de conexão com a Internet ou por algum erro mesmo
+		-->
+		<ng-include src="'src/Template/Element/communication-error.html'" ng-show="communicationError"></ng-include>
+
+		<div class="list text-left" ng-hide="currentEvents.length === 0">
+			<div class="item item-icon-right">
+				{{currentEvent.place.name}} - {{currentEvent.name}}
+
+				<button class="button button-icon icon ion-ios7-gear" ng-click="showEventsPopup()">
+				</button>
+			</div>
+		</div>
+
+		<!-- Mostra quando na parte que ainda nao buscou ninguem -->
+		<div ng-show="profiles.length === 0">
+			<!-- Mostra quando não estpa dentro de nenhum evento -->
+			<div ng-show="currentEvents.length === 0">
+				<h4>
+					Você não está no alcance de nenhum evento atualmente.
+				</h4>
+				<button class="button button-block button-positive" ng-click="getEventsImIn()">Buscar novamente</button>
+			</div>
+			<!-- Mostra quando está dentro de ao menos um evento -->
+			<div ng-show="currentEvents.length > 0">
+				<h5>
+					Nenhum pessoa encontrada, mas calma elas estão chegando!
+				</h5>
+				<button class="button button-block button-positive" ng-click="getEventsImIn()">Buscar pessoas</button>
+			</div>
+		</div>
+
+		<div ng-show="profiles.length > 0">
+
+			<div class="" style="background-color: #E7E7E7; background-image: url({{profiles[0].profile_picture}}); background-size: cover; height: 300px;">
+			</div>
+			<div class="">
+				<h2>{{ profiles[0].name }}</h2>
+				<button class="button button-royal" ng-click="response(0)">Not</button>
+				<button class="button button-success" ng-click="response(1)">Nice</button>	
+			</div>
+
+		</div>
+
+	</ion-content>
+</ion-view>

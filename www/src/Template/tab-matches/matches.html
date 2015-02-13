@@ -1,0 +1,18 @@
+<ion-view view-title="Combinações">
+<!-- 	<ion-nav-buttons side="right">
+		<button class="button button-icon icon ion-more" ng-click="openPopover($event)"></button>
+	</ion-nav-buttons>
+	<ion-nav-buttons side="left">
+		<button class="button button-icon icon ion-social-dropbox"></button>
+	</ion-nav-buttons> -->
+	<ion-content>
+		<ion-list>
+			<ion-item ng-repeat="match in matches" class="item-avatar" href="#/tab/chat/{{match.id}}">
+				<img ng-src="{{match.profile_picture.small}}" style="background-color: #EEE;">
+				<h2>{{match.name}}</h2>
+				<p>Show Pablo da sofrência - Pullse</p>
+				<!-- <p>{{match.club}} - {{match.event}}</p> -->
+			</ion-item>
+		</ion-list>	
+	</ion-content>
+</ion-view>

@@ -1,0 +1,21 @@
+<ion-view view-title="Escolha foto">
+
+	<ion-nav-buttons side="right">
+		<button class="button button-clear button-positive" ng-click="save()" ng-disabled="disableSaveButton">Salvar</button>
+	</ion-nav-buttons>
+
+	<ion-content class="">
+
+		<!-- Selecionado: {{ pictureSelected | json }} -->
+
+		<div ng-repeat="photo in photos">
+				<div
+					ng-click="selectPicture(photo)"
+					style="float: left;height: 200px; width: 50%; background-image: url({{photos[$index].source}}); background-position: top center; background-size: cover;">
+					
+				</div>
+			</div>
+		</div>
+
+	</ion-content>
+</ion-view>

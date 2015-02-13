@@ -1,0 +1,45 @@
+<ion-view view-title="Meu perfil" cache-view="false">
+
+	<ion-content>
+
+		<!--
+			Bloco que aparece para informar que houve um problema de comunicação com o servidor
+			Seja por falta de conexão com a Internet ou por algum erro mesmo
+		-->
+		<ng-include src="'src/Template/Element/communication-error.html'" ng-show="communicationError"></ng-include>
+
+		<div class="list">
+			<div class="item item-thumbnail-left">
+				<img ng-src="{{me.account.profile.profile_img.small}}" width="50">
+				<h2>{{me.account.profile.name}}</h2>
+				<p>{{me.account.username}}</p>
+				<a
+					href="#/tab/profile-pictures"
+					type="button"
+					style="margin-top: 8px;"
+					class="button button-outline button-small button-balanced">
+					Trocar Foto
+				</a>
+			</div>
+			<div class="item item-divider">Opções de relacionamento</div>
+			<div class="item" ng-click="showPreferedGenderPopup()">
+				Interesse
+				<span class="item-note">{{me.account.profile.settings.prefered_gender}}</span>
+			</div>
+
+			<div class="item" ng-click="showPreferedAgePopup()">
+				Idade
+				<span class="item-note">
+					Entre {{me.account.profile.settings.prefered_age.min}} e {{me.account.profile.settings.prefered_age.max | labelMaxAge:60}}
+				</span>
+			</div>
+			<div class="item item-divider">
+				Outras Opções
+			</div>
+			<a class="item" href="#/logout">
+				Sair
+			</a>
+		</div>
+
+	</ion-content>
+</ion-view>
