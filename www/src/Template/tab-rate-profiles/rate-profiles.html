@@ -14,9 +14,14 @@
 
 		<div class="list text-left" ng-hide="currentEvents.length === 0">
 			<div class="item item-icon-right">
-				{{currentEvent.place.name}} - {{currentEvent.name}}
+				<div ng-show="currentEvent.place.name">
+					{{currentEvent.place.name}} - {{currentEvent.name}}
+				</div>
+				<div ng-hide="currentEvent.place.name">
+					<em><small>Nenhum evento selecionado</small></em>
+				</div>
 
-				<button class="button button-icon icon ion-ios7-gear" ng-click="showEventsPopup()">
+				<button class="button button-icon icon ion-ios7-gear" ng-click="refreshEventsAndShowPopup()">
 				</button>
 			</div>
 		</div>
@@ -31,7 +36,7 @@
 				<button class="button button-block button-positive" ng-click="getEventsImIn()">Buscar novamente</button>
 			</div>
 			<!-- Mostra quando está dentro de ao menos um evento -->
-			<div ng-show="currentEvents.length > 0">
+			<div ng-show="currentEvent">
 				<h5>
 					Nenhum pessoa encontrada, mas calma elas estão chegando!
 				</h5>
@@ -45,8 +50,8 @@
 			</div>
 			<div class="">
 				<h2>{{ profiles[0].name }}</h2>
-				<button class="button button-royal" ng-click="response(0)">Not</button>
-				<button class="button button-success" ng-click="response(1)">Nice</button>	
+				<button class="button button-royal" ng-click="response(profiles[0].id, 0)">Not</button>
+				<button class="button button-success" ng-click="response(profiles[0].id, 1)">Nice</button>	
 			</div>
 
 		</div>

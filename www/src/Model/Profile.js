@@ -1,25 +1,31 @@
 angular.module('starter.model.Profile', [])
 
-.factory('Profile', function(Me, $http, $q, localStorageService, WEBSERVICE_URL){
+.factory('Profile', function(
+	$http,
+	$q,
+	Me,
+	localStorageService,
+	WEBSERVICE_URL
+){
 	var data = [];
-	var url = WEBSERVICE_URL + '/profiles';
+
 	return {
 
 		all: function(){
 			return profiles;
 		},
 
-		getClose: function(current_place_id){
+		getClose: function(event_id){
 			
 			var _this = this;
 			var defer = $q.defer();
 
-			$http.get(url + '/getCloseProfiles/' + current_place_id).
+			$http.get(WEBSERVICE_URL + '/profiles/getCloseProfiles?id=' + Me.account.id + '&event_id=' + event_id).
 				success(function(data, status, headers, config) {
-					console.log(data);
 					defer.resolve(data);
 				}).
 				error(function(data, status, headers, config) {
+					defer.reject(data);
 				});
 
 			return defer.promise;

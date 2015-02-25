@@ -13,20 +13,24 @@ a{
 
 /* Chat detail page*/
 .chat-speech-bubble, .chat-speech-bubble-me{
+	max-width: 90%;
 	padding: 10px;
 	border-radius: 4px;
 	moz-border-radius: 4px;
 	webkit-border-radius: 4px;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 	display: inline-block;
 	text-align: left;
 	font-size: 16px;
-
+	float: left;
 }
 .chat-speech-bubble-me{
+	padding-right: 30px;
+	float: right;
 	background-color: #ecf0f1;
 }
 .chat-speech-bubble{
+	padding-right: 30px;
 	color: white;
 	background-color: #3498db;
 }

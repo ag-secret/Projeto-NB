@@ -9,9 +9,10 @@ angular.module('starter.SettingsController', [])
     $ionicPlatform,
     $cordovaNetwork,
     Me,
-    Profile
+    Profile,
+    Network
 ){
-    
+    console.log('tey');
     /**
      * Informações de Conta logada
      * @type {Object}
@@ -55,6 +56,7 @@ angular.module('starter.SettingsController', [])
                         Me.setPreferedGender(res)
                             .then(function(result){
                                 // ...
+                                $scope.communicationError = false;
                             }, function(err){
                                 $scope.communicationError = true;
                             })
@@ -100,11 +102,8 @@ angular.module('starter.SettingsController', [])
                 
                 CustomLoading.simple('Salvando alterações...');
 
-                $ionicPlatform.ready(function() {
-
-                    $scope.communicationError = !$cordovaNetwork.isOnline();
-
-                    if (!$scope.communicationError) {
+                Network.check()
+                    .then(function(result){
                         Me.setPreferedAge(res.age.min, res.age.max)
                             .then(function(result){
                             }, function(err){
@@ -113,10 +112,9 @@ angular.module('starter.SettingsController', [])
                             .finally(function(){
                                 CustomLoading.hide();
                             });
-                    } else {
-                        CustomLoading.hide();
-                    }
-                });
+                    }, function(err){
+                        $scope.communicationError = true;
+                    });
             }
         });
 

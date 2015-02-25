@@ -1,43 +1,55 @@
-<ion-view title="{{chat.name}}">
-	<ion-nav-buttons side="right">
-		<a class="button button-icon icon ion-person" href="#/tab/match-profile/{{match.id}}"></a>
+<ion-view view-title="" cache-view="false">
+	<ion-nav-buttons side="left">
+		<a class="button icon-left button-clear" href="#/tab/match-profile/{{match.id}}">
+			<img ng-src="{{match.profile_picture.small}}" width="32" alt="" style="border-radius: 32px;">
+			{{match.name}}
+		</a>
+		
 	</ion-nav-buttons>
 
 	<ion-content class="has-header has-footer padding">
 
 
-		<div ng-show="chat.messages">
+		<div ng-show="messages">
 <!-- 			<ion-refresher
 				ng-if="chat.messages"
 				pulling-text="Puxe para atualizar..."
 				on-refresh="doRefresh()">
 			</ion-refresher> -->
-			<div ng-class-odd="'row'" ng-repeat="message in messages" >
-				<div class="col col-top " ng-class="{'text-right': message.account_id != chat.id}">
-					<div style="float: left; width: 10%;">
-						<img ng-show="message.account_id == chat.id" src="img/profiles/{{chat.img}}" class="img-circle" width="100%;">
-					</div>
-					<div style="float: right; width: 87%; margin-left: 3%;">
-						<span 
-							ng-class="message.account_id != chat.id ? 'chat-speech-bubble' : 'chat-speech-bubble-me'">
+			<div ng-repeat="message in messages.messages" >
+				<div style="width: 100%; float: left">
+					<div ng-class="message.account_id1 == me.account.id ? 'chat-speech-bubble-me' : 'chat-speech-bubble'">
+						<span>
 							{{ message.message }}
 						</span>
 					</div>
 				</div>
+				<br style="clear: both;">
+				<br>
 			</div>
 		</div>
 
-		<h5 class="text-center" ng-show="!chat.messages">
+		<h5 class="text-center" ng-show="messages.length == 0">
 			<em>Nenhum mensagem trocada</em>
 		</h5>
 
 	</ion-content>
+<!-- 	<form ng-submit="sendMessage()">
+		<div class="bar bar-footer item-input-inset" keyboard-attach style="height: 60px; margin-bottom: 5px;">
+			<label class="item-input-wrapper" >
+				<input type="text" placeholder="Escrever mensagem..." ng-model="messageToSend" style="height: 40px;">
+			</label>
+			<button type="submit" class="button button-icon icon ion-paper-airplane" ng-disabled="!messageToSend"></button>		
+		</div>
+	</form> -->
 
-	<div class="bar bar-footer item-input-inset" style="height: 60px; margin-bottom: 5px;">
-		<label class="item-input-wrapper" >
-			<input type="text" placeholder="Escrever mensagem..." ng-model="messageToSend" style="height: 40px;">
-		</label>
-		<button class="button button-icon icon ion-paper-airplane" ng-click="sendMessage()" ng-disabled="!messageToSend"></button>
-	</div>
+	<form ng-submit="sendMessage()" style="width: 100%;">
+		<ion-footer-bar keyboard-attach class="bar-light">		
+			<input type="text" placeholder="Digite sua mensagem aqui..." ng-model="messageToSend">
+			<div class="buttons">
+				<button type="submit" class="button button-icon icon ion-paper-airplane" ng-disabled="!messageToSend"></button>
+			</div>
+		</ion-footer-bar>
+	</form>
 
 </ion-view>

@@ -9,18 +9,20 @@ angular.module('starter.RateProfilesController', [])
     $scope,
     CustomLoading,
     Event,
+    Match,
     Me,
     Network,
-    Profile
+    Profile,
+    localStorageService
 ){
-
+console.log('chama');
     $scope.title = 'Buscando cocotas';
     $scope.me = Me;
     $scope.profiles = [];
     $scope.dataPopup = {};
 
     $scope.currentEvents = [];
-    $scope.currentEvent = {};
+    $scope.currentEvent = null;
 
     $scope.currentEventLeave = false;
 
@@ -103,44 +105,15 @@ angular.module('starter.RateProfilesController', [])
             });
     };
 
-    $scope.getEventsImIn = function(){
-
+    $scope.refreshEventsAndShowPopup = function(){
         CustomLoading.simple('Buscando eventos na sua localidade...');
 
         Network.check()
             .then(function(result){
                 Event.checkImIn()
                     .then(function(result){
-                        if (result.length > 0) {
-                            if (result.length > 1) {
-                                
-                                $scope.currentEvents = result;
-                                if (JSON.stringify($scope.currentEvent) != '{}') {
-                                    
-                                    var oldCurrentEvent = $scope.currentEvent;
-                                    // console.log('Mostra Old: ' + JSON.stringify(oldCurrentEvent));
-                                    // console.log('Mostra coleção: ' + JSON.stringify(result));
-                                    // console.log('ExistsIn? ' + $scope.currentEventExistsIn(oldCurrentEvent, result));
-                                    if (!$scope.currentEventExistsIn(oldCurrentEvent, result)) {
-                                        $scope.showEventsPopup();
-                                    } else {
-                                        if ($scope.profiles.length === 0) {
-                                            $scope.getCloseProfiles();
-                                        }
-                                    }
-                                } else {
-                                    $scope.showEventsPopup();
-                                }
-                                
-                            } else {
-                                console.log('ali');
-                                $scope.currentEvents = result;
-                                $scope.setCurrentEvent(result[0]);
-                            }
-                        } else {
-                            $scope.currentEvents = [];
-                            $scope.currentEvent = {};
-                        }
+                        $scope.currentEvents = result;
+                        $scope.showEventsPopupRefresh();
                     }, function (err) {
                         $scope.communicationError = true;
                     }).finally(function(){
@@ -152,6 +125,50 @@ angular.module('starter.RateProfilesController', [])
             });
     };
 
+    $scope.getEventsImIn = function(){
+
+        CustomLoading.simple('Buscando eventos na sua localidade...');
+        Network.check()
+            .then(function(result){
+                Event.checkImIn()
+                    .then(function(result){
+                        if (result.length > 0) {
+                            if (result.length > 1) {
+                                $scope.currentEvents = result;
+                                if ($scope.currentEvent) {
+                                    var oldCurrentEvent = $scope.currentEvent;
+
+                                    if (!$scope.currentEventExistsIn(oldCurrentEvent, result)) {
+                                        $scope.showEventsPopup();
+                                    } else {
+                                        if ($scope.profiles.length === 0) {
+                                            $scope.getCloseProfiles();
+                                        }
+                                    }
+                                } else {
+                                    CustomLoading.hide();
+                                    $scope.showEventsPopup();
+                                }
+                            } else {
+                                $scope.currentEvents = result;
+                                $scope.setCurrentEvent(result[0]);
+                            }
+                        } else {
+                            $scope.currentEvents = [];
+                            $scope.currentEvent = null;
+                        }
+                    }, function (err) {
+                        $scope.communicationError = true;
+                    }).finally(function(){
+                        CustomLoading.hide();
+                    }); 
+            }, function(err){
+                $scope.communicationError = true;
+                CustomLoading.hide();
+            });
+        
+    };
+
     // An elaborate, custom popup
     $scope.showEventsPopup = function(){
         var myPopup = $ionicPopup.show({
@@ -160,9 +177,17 @@ angular.module('starter.RateProfilesController', [])
             scope: $scope,
             buttons: [
                 {
+                    text: 'Cancelar',
+                    type: 'button-assertive',
+                    onTap: function(){
+                        return false;
+                    }
+                },
+                {
                     text: 'Escolher',
                     type: 'button-positive',
                     onTap: function(e) {
+
                         if (!$scope.dataPopup.placeSelected) {
                             e.preventDefault();
                         } else {
@@ -179,13 +204,48 @@ angular.module('starter.RateProfilesController', [])
 
             // Seta o novo event atual
             // $scope.currentEvent = data;
-
-            $scope.setCurrentEvent(data);
+            if (data) {
+                $scope.setCurrentEvent(data);
+            }
             // Me.setCurrentEvent($scope.currentEvent.id);
             // // Se não tiver nenhum perfil carregado, carrega novos
             // if ($scope.profiles.length === 0) {
             //     $scope.getCloseProfiles();
             // }
+        });
+    };
+
+    $scope.showEventsPopupRefresh = function(){
+        var myPopup = $ionicPopup.show({
+            templateUrl: 'src/Template/Popup/events.html',
+            title: 'Aonde você está?',
+            scope: $scope,
+            buttons: [
+                {
+                    text: 'Cancelar',
+                    type: 'button-assertive',
+                    onTap: function(){
+                        return false;
+                    }
+                },
+                {
+                    text: 'Escolher',
+                    type: 'button-positive',
+                    onTap: function(e) {
+                        if (!$scope.dataPopup.placeSelected) {
+                            e.preventDefault();
+                        } else {
+                            return $scope.dataPopup.placeSelected;
+                        }
+                    }
+                }
+            ]
+        });
+
+        myPopup.then(function(data) {
+            if (data) {
+                $scope.setCurrentEvent(data);
+            }
         });
     };
 
@@ -196,16 +256,25 @@ angular.module('starter.RateProfilesController', [])
     });
 
     $scope.getCloseProfiles = function(){
-        CustomLoading.hide();
+        
         CustomLoading.simple('Buscando pessoas no seu evento...');
-      
-        Profile.getClose($scope.currentEvent.id)
-            .then(function(data){
-                if (data) {
-                    $scope.profiles = data;
-                    $scope.title = $scope.title = $scope.currentEvent.name;
-                }
-                CustomLoading.hide();
+
+        Network.check()
+            .then(function(result){
+                Profile.getClose($scope.currentEvent.id)
+                    .then(function(data){
+                        if (data) {
+                            $scope.profiles = data;
+                            $scope.title = $scope.title = $scope.currentEvent.name;
+                        }
+                    }, function(err){
+                        $scope.communicationError = true;
+                    })
+                    .finally(function(){
+                        CustomLoading.hide();
+                    });        
+            }, function(err){
+                $scope.communicationError = true;
             });
     };
 
@@ -254,8 +323,16 @@ angular.module('starter.RateProfilesController', [])
     //         });
     // };
 
-    $scope.response = function(){
+    $scope.response = function(target_account_id, response){
+        Network.check()
+            .then(function(result){
+               Match.setResponse(target_account_id, response);
+            }, function(err){
+                
+            });
+
         $scope.profiles.shift();
+
         if ($scope.profiles.length === 0) {
             $scope.getEventsImIn();
         }

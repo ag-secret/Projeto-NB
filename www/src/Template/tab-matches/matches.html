@@ -6,13 +6,30 @@
 		<button class="button button-icon icon ion-social-dropbox"></button>
 	</ion-nav-buttons> -->
 	<ion-content>
-		<ion-list>
+		{{total}}
+		<div class="padding text-center" ng-show="matches.length == 0">
+			<em>Você ainda não possui nenhuma combinação.</em>
+		</div>
+		<ion-refresher
+			pulling-text="Puxe para atualizar..."
+			on-refresh="refreshMatches()">
+		</ion-refresher>
+
+		<ion-list ng-show="matches.length > 0">
 			<ion-item ng-repeat="match in matches" class="item-avatar" href="#/tab/chat/{{match.id}}">
-				<img ng-src="{{match.profile_picture.small}}" style="background-color: #EEE;">
+				<img ng-src="http://bbgl.kinghost.net/img/3/profile_picture.jpg" style="background-color: #EEE;">
 				<h2>{{match.name}}</h2>
-				<p>Show Pablo da sofrência - Pullse</p>
-				<!-- <p>{{match.club}} - {{match.event}}</p> -->
+				<p>Show do Pablo da sofrência</p>
 			</ion-item>
 		</ion-list>	
+
+
+		<ion-list>
+			<ion-item ng-repeat="item in items">
+				{{ item }}
+			</ion-item>
+		</ion-list>
+
+      <ion-infinite-scroll ng-if="!noMoreItemsAvailable" on-infinite="loadMore()" distance="5%"></ion-infinite-scroll>
 	</ion-content>
 </ion-view>

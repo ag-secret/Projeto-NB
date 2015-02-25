@@ -12,17 +12,17 @@ angular.module('starter.component.Common', [])
 		check: function(){
 
 			var defer = $q.defer();
+			
+			// $ionicPlatform.ready(function() {
 
-			$ionicPlatform.ready(function() {
-
-	            var isOnline = PRODUCTION ? true : $cordovaNetwork.isOnline();
+	            var isOnline = PRODUCTION ? $cordovaNetwork.isOnline() : true ;
 
 	            if (isOnline) {
 	            	defer.resolve();
 	            } else {
 	            	defer.reject();
 	            }
-        	});
+        	// });
 
         	return defer.promise;
 		}

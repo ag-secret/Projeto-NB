@@ -10,7 +10,7 @@ angular.module('starter.model.Event', [])
 	return {
 		checkImIn: function(){
 			var defer = $q.defer();
-			var url = WEBSERVICE_URL + '/events/checkImIn/' + Me.account.id;
+			var url = WEBSERVICE_URL + '/events/checkImIn?id=' + Me.account.id;
 
 			$http.get(url)
 				.success(function(data){

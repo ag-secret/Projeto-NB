@@ -9,7 +9,8 @@ angular.module('starter.ProfilePicturesController', [])
     $ionicPlatform,
     $cordovaNetwork,
     CustomLoading,
-    Me
+    Me,
+    Network
 ) {
 
     $scope.communicationError = false;
@@ -23,11 +24,8 @@ angular.module('starter.ProfilePicturesController', [])
      */
     CustomLoading.simple('Carregando fotos...');
 
-    $ionicPlatform.ready(function() {
-
-        $scope.communicationError = $cordovaNetwork.isOnline() ? false : true;
-        
-        if (!$scope.communicationError) {
+    Network.check()
+        .then(function(result){
             Me.getFacebookProfilePictures()
                 .then(function(result){
                     $scope.photos = result;
@@ -37,10 +35,9 @@ angular.module('starter.ProfilePicturesController', [])
                 .finally(function(){
                     CustomLoading.hide();
                 });
-        } else {
-            CustomLoading.hide();
-        }
-    });
+        }, function(err){
+            $scope.communicationError = true;
+        });
 
     $scope.selectPicture = function(photo){
         $scope.disableSaveButton = false;
@@ -49,17 +46,12 @@ angular.module('starter.ProfilePicturesController', [])
 
     $scope.save = function(){
 
-        $ionicPlatform.ready(function() {
+        CustomLoading.simple('Salvando alteração...');
 
-            $scope.communicationError = $cordovaNetwork.isOnline() ? false : true;
-            
-            if (!$scope.communicationError) {
-                
-                CustomLoading.simple('Salvando alteração...');
-
+        Network.check()
+            .then(function(result){
                 Me.updateProfilePicture($scope.pictureSelected)
                     .then(function(data){
-                        CustomLoading.hide();
                         $ionicTabsDelegate.select(2);
                     }, function(data){
                         $scope.communicationError = true;
@@ -67,9 +59,8 @@ angular.module('starter.ProfilePicturesController', [])
                     .finally(function(){
                         CustomLoading.hide();
                     });
-            } else {
-                CustomLoading.hide();
-            }
-        });
+            }, function(err){
+                $scope.communicationError = true; 
+            });
     };
 });

@@ -1,17 +1,18 @@
 angular.module('starter.LoginController', [])
 .controller('LoginController', function(
-    $scope,
-    $rootScope,
-    $location,
-    $ionicPlatform,
     $cordovaNetwork,
-    $ionicTabsDelegate,
     $cordovaOauth,
     $cordovaPush,
+    $ionicPlatform,
+    $ionicTabsDelegate,
+    $location,
+    $rootScope,
+    $state,
+    $scope,
     CustomLoading,
-    localStorageService,
     Me,
-    Network
+    Network,
+    localStorageService
 ) {
     
     localStorageService.clearAll();
@@ -23,19 +24,21 @@ angular.module('starter.LoginController', [])
         
         CustomLoading.simple('Entrando...');
 
-       Network.check()
-        .then(function(result){
-            Me.getAccessByFacebook().then(function(result){
-                $location.path('/tab/rate-profiles');
-                CustomLoading.hide();
+        Network.check()
+            .then(function(result){
+                Me.getAccessByFacebook().then(function(result){
+                    alert('Terminou facebook');
+                    CustomLoading.hide();
+                    $state.go('tab.rate-profiles');
+                }, function(err){
+                    alert('Deu ruim no final');
+                    $scope.errorMessage = err;
+                    CustomLoading.hide();
+                });
             }, function(err){
-                $scope.errorMessage = err;
                 CustomLoading.hide();
+                $scope.errorMessage = 'Conexão com a Internet não detectada';
             });
-        }, function(err){
-            CustomLoading.hide();
-            $scope.errorMessage = 'Conexão com a Internet não detectada';
-        });
     };
 
     $scope.doLogin = function(account_id){

@@ -5,8 +5,10 @@ The FriendsCtrl pulls data from the Friends service (service.js)
 The Friends service returns an array of friend data
 -->
 
-<ion-view hide-nav-bar="true">
+<ion-view hide-nav-bar="true" cache-view="false">
 	<ion-content class="padding text-center">
+		<p>Platform: {{ platform | json }}</p>
+		<p>Device: {{ device | json }}</p>
 		<div class="login-content">
 			<img src="static/img/dropbox-logo-placeholder.png" alt="">
 			<form name="myForm" ng-submit="doLogin(loginData.account_id)">

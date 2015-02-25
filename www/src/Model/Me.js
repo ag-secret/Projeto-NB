@@ -38,7 +38,7 @@ angular.module('starter.model.Me', [])
 		updateProfilePicture: function(picture){
 			var defer = $q.defer();
 			var _this = this;
-
+			console.log(picture);
 			$http.put(
 				WEBSERVICE_URL + '/profiles/updateProfilePicture/' + _this.account.id,
 				{image_url: picture}
@@ -73,17 +73,28 @@ angular.module('starter.model.Me', [])
 		},
 
 		getAccountByFacebookAccesToken: function(accessToken, pushRegid){
+			alert('Entou no getfacebook by access token');
+			alert(accessToken);
+			alert(pushRegid);
+			alert(ionic.Platform.platform());
 			var defer = $q.defer();
 
 			var url = WEBSERVICE_URL + '/accounts/getAccountByFacebook';
+			alert('Começar o request agora');
 			$http.post(
 				url,
-				{accessToken: accessToken, pushRegid: pushRegid}
+				{
+					accessToken: accessToken,
+					pushRegid: pushRegid,
+					platform: ionic.Platform.platform()
+				}
 			)
 				.success(function(data, status){
+					alert('Boa');
 					defer.resolve(data);
 				})
 				.error(function(data){
+					alert('Ruim');
 					defer.reject(data);
 				});
 
@@ -99,6 +110,7 @@ angular.module('starter.model.Me', [])
 
 			_this.getFacebookAccessToken()
 				.then(function(result){
+					alert('Retornou da api e vai char o getPushRegid');
 					var facebookAccessToken = result;
 
 					_this.getPushRegid()
@@ -107,7 +119,9 @@ angular.module('starter.model.Me', [])
 
 							_this.getAccountByFacebookAccesToken(facebookAccessToken, pushRegid)
 								.then(function(data, status){
+									alert('Voltou');
 									_this.account = data.account;
+									alert(JSON.stringify(data));
 									localStorageService.set('account', data.account);
 									defer.resolve(true);
 								}, function(err){
@@ -126,10 +140,12 @@ angular.module('starter.model.Me', [])
 			var defer = $q.defer();
 
 		    var androidConfig = {senderID: PUSH_NOTIFICATION_SENDER_ID};
-
+		    alert('Antes de entrar em platform ready');
 			$ionicPlatform.ready(function() {
+				alert('Etrou');
 	            $cordovaPush.register(androidConfig).then(function(result) {
 	                // Success
+	                alert('Registrou agora acho que nao vai entrar no registered');
 	            }, function(err) {
 	                // Error
 	                defer.reject('Erro ao registrar Push Notification');
@@ -138,6 +154,7 @@ angular.module('starter.model.Me', [])
 	            $rootScope.$on('$cordovaPush:notificationReceived', function(event, notification) {
 	                switch(notification.event) {
 	                    case 'registered':
+	                    alert('entrou hahah' + notification.regid);
 	                        if (notification.regid.length > 0 ) {
 	                            defer.resolve(notification.regid);
 	                        } else {
@@ -157,10 +174,11 @@ angular.module('starter.model.Me', [])
 			var scope = 'email,user_birthday,user_photos';
 
 			var defer = $q.defer();
-
+			alert('Estrou na função mas nao vai entrar no platform ready eu acho');
 			$ionicPlatform.ready(function() {
-
+				alert('Etrou no platform ready');
 	            $cordovaOauth.facebook(FACEBOOK_APP_ID, [scope]).then(function(result) {
+	            	alert('Voltou do facebook api');
 	                defer.resolve(result.access_token);
 	                
 	            /**
@@ -187,7 +205,7 @@ angular.module('starter.model.Me', [])
 				var account = data.account;
 				localStorageService.set('account', account);
 				_this.account = account;
-				defer.resolve(data);
+				defer.resolve(data.account);
 
 			})
 			.error(function(data, status, headers, config) {
@@ -203,12 +221,13 @@ angular.module('starter.model.Me', [])
 			var defer = $q.defer();
 
 			$http.post(
-				WEBSERVICE_URL + '/profiles/setPreferedGender/' + _this.account.id,
+				WEBSERVICE_URL + '/profiles/setPreferedGender?id=' + _this.account.id,
 				{gender: gender}
 			)
 				.success(function(data, status, headers, config) {
 					_this.account.profile.settings.prefered_gender = gender;
 					localStorageService.set('account', _this.account);
+					
 					defer.resolve(data);
 				})
 				.error(function(data, status, headers, config) {
@@ -221,24 +240,27 @@ angular.module('starter.model.Me', [])
 		setPreferedAge: function(min, max){
 			
 			var _this = this;
-			var derer = $q.defer();
+			var defer = $q.defer();
 
 			$http.post(
-				WEBSERVICE_URL + '/profiles/setPreferedAge/' + Me.account.id,
+				WEBSERVICE_URL + '/profiles/setPreferedAge?id=' + _this.account.id,
 				{
 					min: min,
 					max: max
 				}
 			)
 			.success(function(data, status, headers, config) {
-				Me.account.profile.settings.prefered_age.min = min;
-				Me.account.profile.settings.prefered_age.max = max;
-				localStorageService.set('account', Me.account);
-				derer.resolve(data.data);
+				_this.account.profile.settings.prefered_age.min = min;
+				_this.account.profile.settings.prefered_age.max = max;
+				localStorageService.set('account', _this.account);
+
+				defer.resolve(data);
 			})
 			.error(function(data, status, headers, config) {
-				derer.reject(data);
+				defer.reject(data);
 			});
+
+			return defer.promise;
 
 		},
 
@@ -246,7 +268,7 @@ angular.module('starter.model.Me', [])
 			var _this = this;
 			var defer = $q.defer();
 
-			var path = WEBSERVICE_URL + '/profiles/setCurrentEvent/' + _this.account.profile.id;
+			var path = WEBSERVICE_URL + '/profiles/setCurrentEvent?id=' + _this.account.id;
 			
 			$http.put(path, {event_id: event_id}).
 				success(function(data, status, headers, config) {
