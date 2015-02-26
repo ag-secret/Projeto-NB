@@ -120,7 +120,13 @@ angular.module('starter.model.Match', [])
 
 			return defer.promise;
 		},
-		all: function(page){
+		/**
+		 * Pega combinações paginando de acordo com a página passada
+		 *
+		 * @param  {int} page Numero da página 
+		 * @return {array}      Combinações
+		 */
+		getPaginate: function(page){
 			var _this = this;
 			var defer = $q.defer();
 
